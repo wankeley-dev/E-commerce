@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .table-container {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .btn-add {
+            background: linear-gradient(45deg, #10b981, #34d399);
+            transition: all 0.3s ease;
+        }
+        .btn-add:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-edit {
+            background: linear-gradient(45deg, #f59e0b, #fbbf24);
+            transition: all 0.3s ease;
+        }
+        .btn-edit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+        .btn-delete {
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            transition: all 0.3s ease;
+        }
+        .btn-delete:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        .btn-save {
+            background: linear-gradient(45deg, #6b48ff, #00ddeb);
+            transition: all 0.3s ease;
+        }
+        .btn-save:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(107, 72, 255, 0.4);
+        }
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease;
+        }
+        .product-img:hover {
+            transform: scale(1.1);
+        }
+        .form-container {
+            display: none;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .form-container.active {
+            display: block;
+            animation: slideIn 0.3s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #6b48ff;
+            box-shadow: 0 0 0 3px rgba(107, 72, 255, 0.2);
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .container {
+                margin-top: 0;
+                padding: 1rem;
+                padding-bottom: 2rem;
+            }
+            .table-container {
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            .form-container {
+                border-radius: 0;
+            }
+            .product-img {
+                width: 50px;
+                height: 50px;
+            }
+            .btn-add, .btn-edit, .btn-delete, .btn-save {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+        @media (min-width: 641px) {
+            .container {
+                max-width: 72rem;
+                margin-top: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<div class="container mx-auto px-4">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-800 animate__animated animate__fadeInDown">Product Management</h2>
+
+    <!-- Add Product Button -->
+    <div class="flex justify-end mb-6">
+        <button id="toggleForm" class="btn-add text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold flex items-center animate__animated animate__pulse animate__infinite">
+            <i class="fas fa-plus mr-2"></i>Add Product
+        </button>
+    </div>
+
+    <!-- Inline Product Form (Hidden by Default) -->
+    <div id="productForm" class="form-container mb-6">
+        <form th:action="@{/products/save}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" id="productId">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="name" class="block text-gray-700 font-medium mb-2">Product Name</label>
+                    <input type="text" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="category" class="block text-gray-700 font-medium mb-2">Category</label>
+                    <input type="text" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" id="category" name="category" required>
+                </div>
+                <div>
+                    <label for="price" class="block text-gray-700 font-medium mb-2">Price</label>
+                    <input type="number" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" id="price" name="price" required>
+                </div>
+                <div>
+                    <label for="stock" class="block text-gray-700 font-medium mb-2">Stock</label>
+                    <input type="number" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" id="stock" name="stock" required>
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="image" class="block text-gray-700 font-medium mb-2">Product Image</label>
+                    <input type="file" class="form-input w-full p-3 border rounded-lg" id="image" name="image">
+                </div>
+            </div>
+            <button type="submit" class="btn-save text-white w-full mt-4 py-3 rounded-lg font-semibold flex items-center justify-center">
+                <i class="fas fa-save mr-2"></i>Save
+            </button>
+        </form>
+    </div>
+
+    <!-- Product Table -->
+    <div class="table-container p-4 sm:p-6 animate__animated animate__fadeInUp overflow-x-auto">
+        <table class="w-full text-left text-sm sm:text-base">
+            <thead class="bg-gray-100">
+            <tr class="text-gray-700">
+                <th class="p-2 sm:p-4">ID</th>
+                <th class="p-2 sm:p-4">Image</th>
+                <th class="p-2 sm:p-4">Name</th>
+                <th class="p-2 sm:p-4">Category</th>
+                <th class="p-2 sm:p-4">Price</th>
+                <th class="p-2 sm:p-4">Stock</th>
+                <th class="p-2 sm:p-4">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}" class="border-b hover:bg-gray-50 transition-colors duration-200">
+                <td class="p-2 sm:p-4" th:text="${product.id}"></td>
+                <td class="p-2 sm:p-4">
+                    <img th:src="${product.imageUrl}" alt="Product Image" class="product-img">
+                </td>
+                <td class="p-2 sm:p-4" th:text="${product.name}"></td>
+                <td class="p-2 sm:p-4" th:text="${product.category}"></td>
+                <td class="p-2 sm:p-4" th:text="${product.price}"></td>
+                <td class="p-2 sm:p-4" th:text="${product.stock}"></td>
+                <td class="p-2 sm:p-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <button class="btn-edit text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center" onclick="editProduct(this)"
+                            th:attr="data-id=${product.id}, data-name=${product.name}, data-category=${product.category}, data-price=${product.price}, data-stock=${product.stock}, data-image=${product.imageUrl}">
+                        <i class="fas fa-edit mr-2"></i>Edit
+                    </button>
+                    <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn-delete text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center">
+                        <i class="fas fa-trash mr-2"></i>Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Toggle form visibility
+    const toggleFormBtn = document.getElementById('toggleForm');
+    const formContainer = document.getElementById('productForm');
+    toggleFormBtn.addEventListener('click', () => {
+        formContainer.classList.toggle('active');
+        if (formContainer.classList.contains('active') && !toggleFormBtn.classList.contains('editing')) {
+            document.getElementById('productId').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('image').value = '';
+        }
+        toggleFormBtn.classList.remove('editing');
+    });
+
+    // Pre-fill form fields for editing
+    function editProduct(button) {
+        formContainer.classList.add('active');
+        toggleFormBtn.classList.add('editing');
+        document.getElementById('productId').value = button.getAttribute('data-id') || '';
+        document.getElementById('name').value = button.getAttribute('data-name') || '';
+        document.getElementById('category').value = button.getAttribute('data-category') || '';
+        document.getElementById('price').value = button.getAttribute('data-price') || '';
+        document.getElementById('stock').value = button.getAttribute('data-stock') || '';
+    }
+</script>
+</body>
+</html>

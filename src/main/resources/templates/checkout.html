@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .checkout-container {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .btn-place-order {
+            background: linear-gradient(45deg, #10b981, #34d399);
+            transition: all 0.3s ease;
+        }
+        .btn-place-order:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-paystack {
+            background: linear-gradient(45deg, #0A4B8C, #1e6bb8);
+            transition: all 0.3s ease;
+        }
+        .btn-paystack:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(10, 75, 140, 0.4);
+        }
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #6b48ff;
+            box-shadow: 0 0 0 3px rgba(107, 72, 255, 0.2);
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .checkout-container {
+                border-radius: 0; /* Remove rounded corners on mobile for full-screen feel */
+                min-height: 100vh; /* Fill the screen height */
+            }
+            .container {
+                padding: 1rem; /* Consistent padding */
+                margin-top: 0; /* Remove top margin on mobile */
+            }
+            .btn-place-order, .btn-paystack {
+                font-size: 1rem; /* Slightly larger text for mobile readability */
+                padding: 0.75rem 1rem;
+            }
+        }
+        @media (min-width: 641px) {
+            .container {
+                max-width: 32rem; /* Maintain a reasonable width on larger screens */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<div class="container mx-auto mt-0 sm:mt-16 px-4 sm:px-6">
+    <div class="checkout-container p-4 sm:p-6 animate__animated animate__fadeInUp">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 animate__animated animate__fadeInDown">Checkout</h2>
+
+        <!-- Checkout Form -->
+        <form th:action="@{/order/checkout}" method="post">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">Full Name</label>
+                <input type="text" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" name="customerName" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">Email</label>
+                <input type="email" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" name="email" required>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-2">Address</label>
+                <input type="text" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500" name="address" required>
+            </div>
+            <button type="submit" class="btn-place-order text-white w-full py-3 rounded-lg font-semibold flex items-center justify-center">
+                <i class="fas fa-check-circle mr-2"></i>Place Order
+            </button>
+        </form>
+
+        <!-- Paystack Payment Form -->
+        <div class="mt-6 text-center">
+            <p class="mb-3 text-gray-600 font-medium">Or pay securely with Paystack</p>
+            <form action="/payment/checkout" method="post">
+                <input type="hidden" name="email" value="user@example.com">
+                <input type="hidden" name="amount" value="5000"> <!-- Amount in GHS -->
+                <button type="submit" class="btn-paystack text-white px-6 py-3 rounded-lg font-semibold flex items-center mx-auto">
+                    <i class="fas fa-credit-card mr-2"></i>Pay with Paystack
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

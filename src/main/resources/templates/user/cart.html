@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            transition: all 0.3s ease;
+        }
+        .navbar:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .cart-container {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .cart-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease;
+        }
+        .cart-img:hover {
+            transform: scale(1.1);
+        }
+        .btn-continue {
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
+            transition: all 0.3s ease;
+        }
+        .btn-continue:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn-remove {
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            transition: all 0.3s ease;
+        }
+        .btn-remove:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        .btn-checkout {
+            background: linear-gradient(45deg, #10b981, #34d399);
+            transition: all 0.3s ease;
+        }
+        .btn-checkout:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .total-box {
+            background: linear-gradient(45deg, #6b48ff, #00ddeb);
+            border-radius: 10px;
+            padding: 1rem;
+            color: white;
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 1rem; /* Consistent padding on mobile */
+            }
+            .cart-container {
+                border-radius: 0; /* Full-screen feel on mobile */
+                min-height: calc(100vh - 4rem); /* Fill height minus navbar */
+            }
+            .container {
+                margin-top: 4rem; /* Space for fixed navbar */
+                padding: 1rem;
+                padding-bottom: 2rem;
+            }
+            .cart-img {
+                width: 40px;
+                height: 40px;
+            }
+            .btn-continue, .btn-remove, .btn-checkout {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+            .total-box {
+                width: 100%; /* Full width on mobile */
+            }
+        }
+        @media (min-width: 641px) {
+            .container {
+                max-width: 72rem; /* Reasonable width on larger screens */
+                margin-top: 6rem; /* Space for navbar */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<!-- Navigation Bar -->
+<nav class="navbar fixed top-0 w-full z-10 px-4 py-4 sm:px-6">
+    <div class="container mx-auto flex justify-between items-center">
+        <a class="text-xl sm:text-2xl font-bold text-gray-800 hover:text-purple-600 transition-colors duration-300" href="/">TrendyShop</a>
+        <div class="flex items-center space-x-4">
+            <a href="/products/user" class="btn-continue text-white px-4 py-2 sm:px-6 sm:py-2 rounded-lg font-semibold flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i>Continue Shopping
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Cart Content -->
+<div class="container mx-auto px-4 pb-12">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 text-gray-800 animate__animated animate__fadeInDown">Your Shopping Cart</h2>
+
+    <div class="cart-container p-4 sm:p-6 animate__animated animate__fadeInUp">
+        <table class="w-full text-left text-sm sm:text-base">
+            <thead class="bg-gray-100 text-gray-700">
+            <tr>
+                <th class="p-2 sm:p-4">Image</th>
+                <th class="p-2 sm:p-4">Name</th>
+                <th class="p-2 sm:p-4">Quantity</th>
+                <th class="p-2 sm:p-4">Price</th>
+                <th class="p-2 sm:p-4">Total</th>
+                <th class="p-2 sm:p-4">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartItem : ${cartItems}" class="border-b hover:bg-gray-50 transition-colors duration-200">
+                <td class="p-2 sm:p-4">
+                    <img th:src="${cartItem.product.imageUrl}" class="cart-img" alt="Product Image">
+                </td>
+                <td class="p-2 sm:p-4" th:text="${cartItem.product.name}"></td>
+                <td class="p-2 sm:p-4" th:text="${cartItem.quantity}"></td>
+                <td class="p-2 sm:p-4" th:text="'$' + ${cartItem.product.price}"></td>
+                <td class="p-2 sm:p-4" th:text="'$' + ${cartItem.quantity * cartItem.product.price}"></td>
+                <td class="p-2 sm:p-4">
+                    <a th:href="@{/cart/remove/{id}(id=${cartItem.id})}" class="btn-remove text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center">
+                        <i class="fas fa-trash mr-2"></i>Remove
+                    </a>
+                </td>
+            </tr>
+            <tr th:unless="${#lists.isEmpty(cartItems)}" class="text-center text-gray-500">
+                <td colspan="6" class="p-4">Your cart is empty!</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total and Checkout -->
+    <div class="flex justify-end mt-6">
+        <div class="total-box text-center animate__animated animate__bounceIn">
+            <h4 class="text-lg sm:text-xl font-semibold">Total: <span th:text="'$' + ${totalPrice}"></span></h4>
+            <a href="/checkout" class="btn-checkout text-white px-6 py-3 rounded-lg font-semibold flex items-center mt-4 inline-block">
+                <i class="fas fa-credit-card mr-2"></i>Proceed to Checkout
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

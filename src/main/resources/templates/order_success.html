@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .success-container {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            max-width: 32rem; /* Reasonable width */
+            width: 100%;
+        }
+        .btn-continue {
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
+            transition: all 0.3s ease;
+        }
+        .btn-continue:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        .icon-success {
+            font-size: 3rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            .success-container {
+                border-radius: 0;
+                min-height: 100vh;
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .btn-continue {
+                font-size: 0.875rem;
+                padding: 0.75rem 1.5rem;
+            }
+            .icon-success {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<div class="success-container animate__animated animate__fadeInUp">
+    <i class="fas fa-check-circle icon-success animate__animated animate__bounceIn"></i>
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">Order Placed Successfully!</h2>
+    <p class="text-gray-600 mb-6">Thank you for shopping with us. Your order has been placed and is now being processed.</p>
+    <a href="/products/user" class="btn-continue text-white px-6 py-3 rounded-lg font-semibold inline-flex items-center">
+        <i class="fas fa-shopping-bag mr-2"></i>Continue Shopping
+    </a>
+</div>
+</body>
+</html>
