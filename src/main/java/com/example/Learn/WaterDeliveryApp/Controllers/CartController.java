@@ -22,22 +22,21 @@ public class CartController {
 
     @GetMapping
     public String viewCart(Model model) {
-        List<CartItem> cartItems = cartService.getCartItems();
+        List<CartItem> cartItems = cartService.getCartItems(); // Now user-specific
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", cartService.getTotalPrice());
-        return "user/cart";  // Make sure you have cart.html inside src/main/resources/templates/user/
+        return "user/cart"; // Template path remains the same
     }
 
     @PostMapping("/add")
     public String addToCart(@RequestParam Long productId, @RequestParam int quantity) {
-        cartService.addToCart(productId, quantity); // Pass only productId
-        return "redirect:/products/user"; // Redirect user back to product list
+        cartService.addToCart(productId, quantity); // Now adds to current user's cart
+        return "redirect:/products/user";
     }
-
 
     @GetMapping("/remove/{cartItemId}")
     public String removeFromCart(@PathVariable Long cartItemId) {
-        cartService.removeFromCart(cartItemId);
+        cartService.removeFromCart(cartItemId); // Now checks user ownership
         return "redirect:/cart";
     }
 }
